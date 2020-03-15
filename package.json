@@ -1,0 +1,21 @@
+{
+  "name": "xterm-recorder",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "javacs3",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -b ./tsconfig.json"
+  },
+  "dependencies": {
+    "ffmpeg-static": "^4.0.1",
+    "node-portaudio": "^0.4.10",
+    "node-pty": "^0.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^13.9.0",
+    "tslint": "^6.0.0",
+    "tslint-consistent-codestyle": "^1.16.0",
+    "typescript": "^3.8.3"
+  }
+}
