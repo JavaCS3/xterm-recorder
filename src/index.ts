@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import * as portAudio from 'node-portaudio'
 import { AudioEncoder } from './AudioEncoder'
 import { PtyRecorder, PtyStream } from './PtyRecorder'
-import { fixed3, now } from './Time'
+import { fixed6, now } from './Time'
 import { fileAppendSync, writeJsonSync } from './Utils'
 
 const sampleRate = 48000
@@ -27,15 +27,15 @@ au.start()
 const rec = new PtyRecorder()
 const start = now()
 const ptyStream = new PtyStream(rec, start)
-const evtStream = fs.createWriteStream(castPath)
+const evtStream = fs.createWriteStream(evtPath)
 
 ptyStream.pipe(evtStream)
 
 rec.bindStdio()
 rec.onExit(async () => {
   console.log(chalk.green.inverse.bold('Stop Recording'))
-  pcmStream.end()
-  evtStream.end()
+  // pcmStream.end()
+  // evtStream.end()
 
   au.quit()
 
@@ -52,7 +52,7 @@ rec.onExit(async () => {
     version: 2,
     width: rec.cols,
     height: rec.rows,
-    duration: fixed3(now() - start)
+    duration: fixed6(now() - start)
   })
   fileAppendSync(castPath, evtPath)
 
