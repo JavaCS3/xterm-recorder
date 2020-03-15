@@ -1,24 +1,53 @@
+import chalk from 'chalk'
 import * as fs from 'fs'
+import * as portAudio from 'node-portaudio'
 import { AudioEncoder } from './AudioEncoder'
 import { PtyRecorder, PtyStream } from './PtyRecorder'
-import { now, fixed3 } from './Time'
-import { writeJsonSync, fileAppendSync } from './Utils'
+import { fixed3, now } from './Time'
+import { fileAppendSync, writeJsonSync } from './Utils'
 
 const sampleRate = 48000
 const channels = 1
+
+const audioPath = 'audio.pcm'
 const castPath = 'out.cast'
 const evtPath = 'evt.json'
 
-const start = now()
+console.log(chalk.yellow.inverse.bold('Recording...'))
+
+const au = new portAudio.AudioInput({
+  channelCount: channels,
+  sampleFormat: portAudio.SampleFormat16Bit,
+  sampleRate
+})
+const pcmStream = fs.createWriteStream(audioPath)
+au.pipe(pcmStream)
+au.start()
+
 const rec = new PtyRecorder()
+const start = now()
 const ptyStream = new PtyStream(rec, start)
 const evtStream = fs.createWriteStream(castPath)
 
 ptyStream.pipe(evtStream)
 
 rec.bindStdio()
-rec.onExit(() => {
+rec.onExit(async () => {
+  console.log(chalk.green.inverse.bold('Stop Recording'))
+  pcmStream.end()
   evtStream.end()
+
+  au.quit()
+
+  const encoder = new AudioEncoder(audioPath, 'out.mp3', {
+    channels,
+    sampleRate,
+    codec: 'pcm_s16le',
+    sampleFormat: 's16le'
+  })
+
+  await encoder.encode()
+
   writeJsonSync(castPath, {
     version: 2,
     width: rec.cols,
@@ -26,37 +55,6 @@ rec.onExit(() => {
     duration: fixed3(now() - start)
   })
   fileAppendSync(castPath, evtPath)
-  process.exit(0)
+
+  process.exit(0)  // FIXME: Sometimes this won't quit the while process
 })
-
-// rec.onExit(console.log)
-
-// const ai = new portAudio.AudioInput({
-//   channelCount: channels,
-//   sampleFormat: portAudio.SampleFormat16Bit,
-//   sampleRate
-// })
-
-
-// ai.pipe(fs.createWriteStream('audio.pcm'))
-
-
-// console.log('Recording...')
-// ai.start()
-
-// const encoder = new AudioEncoder('./audio.pcm', 'o.ogg', {
-//   sampleFormat: 's16le',
-//   sampleRate,
-//   channels,
-//   codec: 'pcm_s16le'
-// })
-
-// encoder.encode().then(() => {
-//   console.log('done')
-// }).catch(console.error)
-
-
-// setTimeout(() => {
-//   console.log('stop')
-//   ai.quit()
-// }, 2000)
