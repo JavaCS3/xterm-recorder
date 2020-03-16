@@ -3,6 +3,6 @@ export function now(): number {
   return ts[0] + 1e-9 * ts[1]
 }
 
-export function fixed6(value: number): number {
-  return Math.round(value * 1e6) / 1e6
+export function fixed7(value: number): number {
+  return Math.round(value * 1e7) / 1e7
 }

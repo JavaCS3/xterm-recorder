@@ -32,6 +32,7 @@ export class AudioEncoder {
       const p = spawn(FFMPEG_BIN, [
         '-y',
         '-f', this._options.sampleFormat,
+        '-ar', this._options.sampleRate.toFixed(0),
         '-ac', this._options.channels.toString(),
         '-acodec', this._options.codec,
         '-i', this.src,

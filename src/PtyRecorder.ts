@@ -1,7 +1,7 @@
 import * as os from 'os'
 import * as pty from 'node-pty'
 import * as stream from 'stream'
-import { now, fixed6 } from './Time'
+import { now, fixed7 } from './Time'
 
 const DEFAULT_SHELL = os.platform() === 'win32' ? 'powershell.exe' : 'sh'
 
@@ -77,7 +77,7 @@ export class PtyStream extends stream.Readable {
   ) {
     super()
     this.rec.onData((data, time) => {
-      this.push(JSON.stringify([fixed6(time - this.start), 'o', data]) + '\n')
+      this.push(JSON.stringify([fixed7(time - this.start), 'o', data]) + '\n')
     })
     this.rec.onExit(() => {
       this.push(null)
