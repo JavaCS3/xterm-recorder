@@ -23,7 +23,7 @@ export class PtyRecorder implements pty.IDisposable {
     this._proc = pty.spawn(cmd, args, {
       cols: this._cols = process.stdout.columns,
       rows: this._rows = process.stdout.rows,
-      cwd: process.env.HOME,
+      cwd: process.env.PWD,
       env: <{ [key: string]: string }>process.env
     })
     this._disposables.push(
