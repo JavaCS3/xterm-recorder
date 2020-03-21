@@ -1,0 +1,10 @@
+# Blacklist - exclude everything except npm defaults such as LICENSE, etc
+*
+!*/
+
+# Whitelist - entries to be included must be negated with "!"
+!bin/*.js
+!out/**/*.js
+!out/**/*.js.map
+!src/**/*.ts
+!src/**/*.ts.map
