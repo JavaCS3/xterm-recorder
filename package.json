@@ -1,7 +1,7 @@
 {
   "name": "xterm-recorder",
   "version": "0.0.1",
-  "main": "index.js",
+  "main": "bin/app.js",
   "author": "javacs3",
   "license": "MIT",
   "bin": {
