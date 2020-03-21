@@ -83,6 +83,6 @@ export class PtyStream extends stream.Readable {
       this.push(null)
     })
   }
-  // tslint:disable-next-line: naming-convention
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   _read() { }
 }

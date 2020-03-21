@@ -6,8 +6,8 @@ export type AudioSampleRate = 8000 | 12000 | 16000 | 24000 | 48000
 
 export interface IAudioEncoderOption {
   sampleFormat: AudioSampleFormat
-  sampleRate: number,
-  channels: number,
+  sampleRate: number
+  channels: number
   codec: string
 }
 
