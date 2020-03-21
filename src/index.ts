@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 import * as fs from 'fs'
-// import * as portAudio from 'node-portaudio'
+import { AudioRecorderStream } from './AudioRecorderStream'
 import { AudioEncoder } from './AudioEncoder'
 import { PtyRecorder, PtyStream } from './PtyRecorder'
 import { fixed7, now } from './Time'
@@ -15,26 +15,11 @@ const evtPath = 'evt.json'
 
 console.log(chalk.yellow.inverse.bold('Recording...'))
 
-import { SpeechRecorder } from "speech-recorder"
-
-const recorder = new SpeechRecorder({ sampleRate })
-const writeStream = fs.createWriteStream(audioPath)
+const audioStream = new AudioRecorderStream(sampleRate)
+audioStream.pipe(fs.createWriteStream(audioPath))
 
 const start = now()
-recorder.start({
-  onAudio: (audio: Buffer) => {
-    writeStream.write(audio)
-  }
-})
-
-// const au = new portAudio.AudioInput({
-//   channelCount: channels,
-//   sampleFormat: portAudio.SampleFormat16Bit,
-//   sampleRate
-// })
-// const pcmStream = fs.createWriteStream(audioPath)
-// au.pipe(pcmStream)
-// au.start()
+audioStream.start()
 
 const rec = new PtyRecorder()
 const ptyStream = new PtyStream(rec, start)
@@ -45,10 +30,7 @@ ptyStream.pipe(evtStream)
 rec.bindStdio()
 rec.onExit(async () => {
   console.log(chalk.green.inverse.bold('Stop Recording'))
-  // pcmStream.end()
-  // evtStream.end()
-  recorder.stop()
-  // au.quit()
+  audioStream.stop()
 
   const encoder = new AudioEncoder(audioPath, 'out.mp3', {
     channels,
